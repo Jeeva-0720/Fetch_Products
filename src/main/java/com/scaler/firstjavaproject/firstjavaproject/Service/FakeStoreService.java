@@ -2,6 +2,7 @@ package com.scaler.firstjavaproject.firstjavaproject.Service;
 
 import com.scaler.firstjavaproject.firstjavaproject.DTO.FakeStoreResponseDTO;
 import com.scaler.firstjavaproject.firstjavaproject.Model.Product;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,6 +22,9 @@ public class FakeStoreService implements ProductService{
     public Product getProductById(int id) {
         ResponseEntity<FakeStoreResponseDTO> response = restTemplate.getForEntity("https://fakestoreapi.com/products/" + id,
                 FakeStoreResponseDTO.class);
+        if(response.getStatusCode().equals(HttpStatus.OK)){
+            return null;
+        }
         FakeStoreResponseDTO fakeStoreResponseDTO = response.getBody();
         assert fakeStoreResponseDTO != null;
         return fakeStoreResponseDTO.convertToProduct();

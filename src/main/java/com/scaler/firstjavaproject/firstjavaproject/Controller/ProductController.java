@@ -4,6 +4,8 @@ import com.scaler.firstjavaproject.firstjavaproject.DTO.CreateProductRequestDTO;
 import com.scaler.firstjavaproject.firstjavaproject.DTO.ProductResponseDTO;
 import com.scaler.firstjavaproject.firstjavaproject.Model.Product;
 import com.scaler.firstjavaproject.firstjavaproject.Service.ProductService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,9 +20,15 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public ProductResponseDTO getProductById(@PathVariable("id") int id) {
+    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable("id") int id) {
         Product product = productService.getProductById(id);
-        return convertProductTodto(product);
+        if(product == null){
+            System.out.println("Product not found");
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        ProductResponseDTO dto = convertProductTodto(product);
+        System.out.println("Product not found");
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping("/products")
