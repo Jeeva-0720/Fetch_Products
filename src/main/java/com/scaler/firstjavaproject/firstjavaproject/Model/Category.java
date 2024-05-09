@@ -1,9 +1,20 @@
 package com.scaler.firstjavaproject.firstjavaproject.Model;
 
-import lombok.Data;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-@Data
-public class Category {
-    private int id;
+import java.util.List;
+
+@Getter
+@Setter
+@Entity
+public class Category extends BaseModel{
     private String name;
+
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
+
 }

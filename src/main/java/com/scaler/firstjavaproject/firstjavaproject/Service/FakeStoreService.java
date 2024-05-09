@@ -1,6 +1,7 @@
 package com.scaler.firstjavaproject.firstjavaproject.Service;
 
 import com.scaler.firstjavaproject.firstjavaproject.DTO.FakeStoreResponseDTO;
+import com.scaler.firstjavaproject.firstjavaproject.Exception.CategoryNotFoundException;
 import com.scaler.firstjavaproject.firstjavaproject.Model.Product;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Service("FakeStoreService")
 public class FakeStoreService implements ProductService{
     private RestTemplate restTemplate;
 
@@ -22,16 +23,14 @@ public class FakeStoreService implements ProductService{
     public Product getProductById(int id) {
         ResponseEntity<FakeStoreResponseDTO> response = restTemplate.getForEntity("https://fakestoreapi.com/products/" + id,
                 FakeStoreResponseDTO.class);
-        if(response.getStatusCode().equals(HttpStatus.OK)){
-            return null;
-        }
+
         FakeStoreResponseDTO fakeStoreResponseDTO = response.getBody();
-        assert fakeStoreResponseDTO != null;
+//        assert fakeStoreResponseDTO != null;
         return fakeStoreResponseDTO.convertToProduct();
     }
 
     @Override
-    public Product createProduct(String title, String description, double price, String image, String category) {
+    public Product createProduct(String title, String description, double price, String image, String category) throws CategoryNotFoundException {
         FakeStoreResponseDTO requestBody = new FakeStoreResponseDTO();
         requestBody.setTitle(title);
         requestBody.setDescription(description);

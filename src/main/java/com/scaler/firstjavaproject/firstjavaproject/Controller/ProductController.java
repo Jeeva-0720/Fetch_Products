@@ -2,8 +2,10 @@ package com.scaler.firstjavaproject.firstjavaproject.Controller;
 
 import com.scaler.firstjavaproject.firstjavaproject.DTO.CreateProductRequestDTO;
 import com.scaler.firstjavaproject.firstjavaproject.DTO.ProductResponseDTO;
+import com.scaler.firstjavaproject.firstjavaproject.Exception.CategoryNotFoundException;
 import com.scaler.firstjavaproject.firstjavaproject.Model.Product;
 import com.scaler.firstjavaproject.firstjavaproject.Service.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,20 +17,15 @@ import java.util.List;
 public class ProductController {
     private ProductService productService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(@Qualifier("FakeStoreService") ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable("id") int id) {
+    public ProductResponseDTO getProductById(@PathVariable("id") int id) {
         Product product = productService.getProductById(id);
-        if(product == null){
-            System.out.println("Product not found");
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
         ProductResponseDTO dto = convertProductTodto(product);
-        System.out.println("Product not found");
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        return dto;
     }
 
     @GetMapping("/products")
@@ -53,7 +50,7 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public Product createProduct(@RequestBody CreateProductRequestDTO dto) {
+    public Product createProduct(@RequestBody CreateProductRequestDTO dto) throws CategoryNotFoundException {
         Product p = productService.createProduct(dto.getTitle(), dto.getDescription(), dto.getPrice(), dto.getImage(), dto.getCategory());
 
         return p;
